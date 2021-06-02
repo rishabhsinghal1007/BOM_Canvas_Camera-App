@@ -8,7 +8,6 @@ body {
 }
 
 .video-container {
-    /* position: fixed; */
     height: 100vh;
     background-color: black;
     display: flex;
@@ -24,7 +23,12 @@ body {
 #click-picture {
     position: fixed;
     right: 6rem;
-    top: 50vh;
+    top: 53vh;
+}
+
+.icon {
+    color: white;
+    font-size: 40px;
 }
 
 .filter-container {
@@ -48,4 +52,10 @@ body {
     width: 100vw;
     position: fixed;
     top: 0;
+}
+
+.zoom {
+    position: absolute;
+    bottom: 30px;
+    left: 50vw;
 }

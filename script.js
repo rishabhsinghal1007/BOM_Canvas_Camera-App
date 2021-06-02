@@ -2,6 +2,9 @@ let constraints = { video: true, audio: true };
 
 let videoPlayer = document.querySelector("video");
 let audioPlayer = document.querySelector("audio");
+
+let frame = document.querySelector(".frame");
+frame.style["max-width"] = videoPlayer.offsetWidth + "px";
 let vidRecBtn = document.querySelector("#record-video");
 
 let captureBtn = document.querySelector("#click-picture");
@@ -9,6 +12,23 @@ let captureBtn = document.querySelector("#click-picture");
 let recordState = false;
 let mediaRecorder;
 let chunks = [];
+let zoom = 1;
+
+let zoomIn = document.querySelector(".zoom-in");
+zoomIn.addEventListener("click", function () {
+    if (zoom < 2.5) {
+        zoom += 0.1;
+        videoPlayer.style.transform = `scale(${zoom})`;
+    }
+});
+
+let zoomOut = document.querySelector(".zoom-out");
+zoomOut.addEventListener("click", function () {
+    if (zoom > 1) {
+        zoom -= 0.1;
+        videoPlayer.style.transform = `scale(${zoom})`;
+    }
+});
 
 captureBtn.addEventListener("click", function () {
     capture();
@@ -18,11 +38,11 @@ vidRecBtn.addEventListener("click", function () {
     if (!recordState) {
         mediaRecorder.start();
         recordState = true;
-        vidRecBtn.innerText = "Recording...";
+        vidRecBtn.style.color = "red";
     } else {
         mediaRecorder.stop();
         recordState = false;
-        vidRecBtn.innerText = "Record";
+        vidRecBtn.style.color = "white";
     }
 });
 
@@ -53,6 +73,10 @@ function capture() {
     // console.log(videoPlayer.videoWidth, videoPlayer.videoHeight);
 
     let ctx = canvas.getContext("2d");
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-(canvas.width / 2), canvas.height / 2);
+
     ctx.drawImage(videoPlayer, 0, 0);
     if (filter != "") {
         ctx.fillStyle = filter;
@@ -60,7 +84,6 @@ function capture() {
     }
     let link = document.createElement("a");
     link.download = "img.png";
-    // toDataURL creating url.. 
     link.href = canvas.toDataURL();
     link.click();
 }
@@ -87,3 +110,7 @@ function addFilterToScreen(filter) {
     filterScreen.style.backgroundColor = filter;
     document.querySelector(".filter-screen-parent").append(filterScreen);
 }
+
+navigator.mediaDevices.enumerateDevices().then(function (devices) {
+    console.log(devices);
+})
